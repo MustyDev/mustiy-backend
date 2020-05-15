@@ -98,8 +98,9 @@ func (store *UserStoreMySQL) Find(id int) *User {
 	user := User{}
 
 	err := store.DB.
-		QueryRow(`SELECT * FROM user WHERE id=?`, id).
+		QueryRow(`SELECT * FROM users WHERE id=?`, id).
 		Scan(
+			&user.id,
 			&user.Username,
 			&user.Email,
 			&user.Phone,
@@ -118,7 +119,7 @@ func (store *UserStoreMySQL) Find(id int) *User {
 
 func (store *UserStoreMySQL) Update(user *User) error {
 	result, err := store.DB.Exec(`
-		UPDATE user SET Username= ?, Email = ?, Phone = ?, Password = ?, Role = ? WHERE id =?`,
+		UPDATE users SET Username= ?, Email = ?, Phone = ?, Password = ?, Role = ? WHERE id =?`,
 		user.Username,
 		user.Email,
 		user.Phone,
@@ -141,7 +142,7 @@ func (store *UserStoreMySQL) Update(user *User) error {
 
 func (store *UserStoreMySQL) Delete(user *User) error {
 	result, err := store.DB.Exec(`
-	DELETE FROM user WHERE id = ?`,
+	DELETE FROM users WHERE id = ?`,
 		user.id,
 	)
 	if err != nil {

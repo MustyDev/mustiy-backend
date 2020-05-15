@@ -13,7 +13,7 @@ import (
 
 func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 
-	// curl http://localhost:8080/users
+	// curl http://localhost:9001/users
 	e.GET("/users", func(c echo.Context) error {
 		// Process
 		users := storeUsers.All()
@@ -22,7 +22,7 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 		return c.JSON(http.StatusOK, users)
 	})
 
-	// curl -d "Username=EnggarSe &Email=enggarseptrinas@yahoo.com &Phone=0812670053234 &Password=asdzxc" http://localhost:8080/users
+	// curl -d "Username=EnggarSe &Email=enggarseptrinas@yahoo.com &Phone=0812670053234 &Password=asdzxc" http://localhost:9001/users
 	e.POST("/users", func(c echo.Context) error {
 		// Given
 		var role int
@@ -49,7 +49,7 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 		return c.JSON(http.StatusOK, user)
 	})
 
-	//curl -X DELETE http://localhost:8080/users/1
+	//curl -X DELETE http://localhost:9001/users/19
 
 	e.DELETE("/users/:id", func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
@@ -60,6 +60,8 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 
 		return c.JSON(http.StatusOK, user)
 	})
+
+	// curl -X PUT -d "Username=GentaKamsa &Email=enggarseptrinas@yahoo.com &Phone=0812670053234 &Password=asdzxc" http://localhost:9001/users/22
 
 	e.PUT("/users/:id", func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
