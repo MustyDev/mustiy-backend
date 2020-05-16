@@ -81,6 +81,10 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 
 }
 
+func app(e *echo.Echo, store model.DanaStore) {
+
+}
+
 func main() {
 	godotenv.Load()
 	var storeUsers model.UserStore
