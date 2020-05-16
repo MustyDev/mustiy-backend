@@ -9,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func appUsers(e *echo.Echo, storeUsers model.UserStore) {
@@ -157,6 +158,7 @@ func main() {
 	storeUsers = model.NewUserMySQL()
 	store := model.NewDanaStoreMysql()
 	e := echo.New()
+	e.Use(middleware.CORS())
 	appUsers(e, storeUsers)
 	app(e, store)
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
