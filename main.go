@@ -82,6 +82,72 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 }
 
 func app(e *echo.Echo, store model.DanaStore) {
+	e.GET("/donasi", func(c echo.Context) error {
+		danas := store.All()
+		return c.JSON(http.StatusOK, danas)
+	})
+
+	e.GET("/donasi/:id", func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+		danas := store.Find(id)
+		return c.JSON(http.StatusOK, danas)
+	})
+
+	e.GET("/donasi/kategori/:kategori", func(c echo.Context) error {
+
+		kategori, _ := strconv.Atoi(c.Param("kategori"))
+		danas := store.Found(kategori)
+		return c.JSON(http.StatusOK, danas)
+	})
+
+	e.POST("/donasi", func(c echo.Context) error {
+		judul := c.FormValue("judul")
+		kategori, _ := strconv.Atoi(c.Param("kategori"))
+		nama := c.FormValue("nama")
+		organisasi := c.FormValue("organisasi")
+		email := c.FormValue("email")
+		nominal, _ := strconv.Atoi(c.Param("nominal"))
+		deskripsi := c.FormValue("deskripsi")
+		waktu_start := c.FormValue("waktu_start")
+		waktu_end := c.FormValue("waktu_end")
+		url := c.FormValue("url")
+		status := c.FormValue("status")
+
+		danas, _ := model.CreateDana(judul, kategori, nama, organisasi, email, nominal, deskripsi, waktu_start, waktu_end, url, status)
+		store.Save(danas)
+
+		return c.JSON(http.StatusOK, danas)
+	})
+
+	e.PUT("/donasi/:id", func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		dana := store.Find(id)
+		dana.Judul = c.FormValue("judul")
+		dana.Kategori, _ = strconv.Atoi(c.Param("kategori"))
+		dana.Nama = c.FormValue("nama")
+		dana.Organisasi = c.FormValue("organisasi")
+		dana.Email = c.FormValue("email")
+		dana.Nominal, _ = strconv.Atoi(c.Param("nominal"))
+		dana.Deskripsi = c.FormValue("deskripsi")
+		dana.Waktu_start = c.FormValue("waktu_start")
+		dana.Waktu_end = c.FormValue("waktu_end")
+		dana.Url = c.FormValue("url")
+		dana.Status = c.FormValue("status")
+
+		store.Update(dana)
+
+		return c.JSON(http.StatusOK, dana)
+	})
+
+	e.DELETE("/donasi/:id", func(c echo.Context) error {
+		id, _ := strconv.Atoi(c.Param("id"))
+		dana := store.Find(id)
+		store.Delete(dana)
+		return c.JSON(http.StatusOK, dana)
+	})
 
 }
 
@@ -89,7 +155,9 @@ func main() {
 	godotenv.Load()
 	var storeUsers model.UserStore
 	storeUsers = model.NewUserMySQL()
+	store := model.NewDanaStoreMysql()
 	e := echo.New()
 	appUsers(e, storeUsers)
+	app(e, store)
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }

@@ -14,7 +14,7 @@ type DanaMysql struct {
 
 func NewDanaStoreMysql() DanaStore {
 	godotenv.Load()
-	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASS") + "@tcp(" + os.Getenv("DB_HOST") + ")/" + os.Getenv("DB_NAME") + "?parseTime=true&clientFoundRows=true"
+	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ")/" + os.Getenv("DB_NAME") + "?parseTime=true&clientFoundRows=true"
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -26,7 +26,7 @@ func NewDanaStoreMysql() DanaStore {
 
 func (store *DanaMysql) All() []Dana {
 	danas := []Dana{}
-	rows, err := store.DB.Query("SELECT * FROM dana")
+	rows, err := store.DB.Query("SELECT * FROM donasi")
 	if err != nil {
 		return danas
 	}
@@ -54,7 +54,7 @@ func (store *DanaMysql) All() []Dana {
 }
 
 func (store *DanaMysql) Save(dana *Dana) error {
-	result, err := store.DB.Exec(`INSERT INTO dana(judul,kategori,nama,organisasi,email,nominal,deskripsi,waktu_start,waktu_end,url,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`, dana.Judul, dana.Kategori, dana.Nama, dana.Organisasi, dana.Email, dana.Nominal, dana.Deskripsi, dana.Waktu_start, dana.Waktu_end, dana.Url, dana.Status)
+	result, err := store.DB.Exec(`INSERT INTO donasi(judul,kategori,nama,organisasi,email,nominal,deskripsi,waktu_start,waktu_end,url,status) VALUES(?,?,?,?,?,?,?,?,?,?,?)`, dana.Judul, dana.Kategori, dana.Nama, dana.Organisasi, dana.Email, dana.Nominal, dana.Deskripsi, dana.Waktu_start, dana.Waktu_end, dana.Url, dana.Status)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (store *DanaMysql) Save(dana *Dana) error {
 func (store *DanaMysql) Find(id int) *Dana {
 	dana := Dana{}
 
-	err := store.DB.QueryRow(`SELECT * FROM dana WHERE id=?`, id).Scan(
+	err := store.DB.QueryRow(`SELECT * FROM donasi WHERE id=?`, id).Scan(
 		&dana.ID,
 		&dana.Judul,
 		&dana.Kategori,
@@ -99,7 +99,7 @@ func (store *DanaMysql) Find(id int) *Dana {
 func (store *DanaMysql) Found(kategori int) *Dana {
 	dana := Dana{}
 
-	err := store.DB.QueryRow(`SELECT * FROM dana WHERE kategori=?`, kategori).Scan(
+	err := store.DB.QueryRow(`SELECT * FROM donasi WHERE kategori=?`, kategori).Scan(
 		&dana.ID,
 		&dana.Judul,
 		&dana.Kategori,
@@ -124,7 +124,7 @@ func (store *DanaMysql) Found(kategori int) *Dana {
 
 func (store *DanaMysql) Update(dana *Dana) error {
 	result, err := store.DB.Exec(`
-    UPDATE dana SET judul= ?, kategori= ?, nama = ?, organisasi = ?,email = ?, nominal = ?, deskripsi = ?, waktu_start = ?,waktu_end = ? WHERE id = ?`,
+    UPDATE donasi SET judul= ?, kategori= ?, nama = ?, organisasi = ?,email = ?, nominal = ?, deskripsi = ?, waktu_start = ?,waktu_end = ? WHERE id = ?`,
 		dana.Judul,
 		dana.Kategori,
 		dana.Nama,
@@ -149,7 +149,7 @@ func (store *DanaMysql) Update(dana *Dana) error {
 }
 
 func (store *DanaMysql) Delete(dana *Dana) error {
-	result, err := store.DB.Exec(`DELETE FROM dana WHERE id = ?`, dana.ID)
+	result, err := store.DB.Exec(`DELETE FROM donasi WHERE id = ?`, dana.ID)
 	if err != nil {
 		return err
 	}
