@@ -173,4 +173,5 @@ func main() {
 	appUsers(e, storeUsers)
 	app(e, store)
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+
 }

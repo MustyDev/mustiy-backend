@@ -19,7 +19,7 @@ type UserStoreMySQL struct {
 	DB *sql.DB
 }
 type User struct {
-	id       int
+	ID       int
 	Username string
 	Email    string
 	Phone    string
@@ -47,7 +47,15 @@ func (store *UserStoreMySQL) All() []User {
 	}
 	user := User{}
 	for rows.Next() {
-		rows.Scan(&user.id, &user.Username, &user.Email, &user.Phone, &user.Password, &user.Role, &user.Token)
+		rows.Scan(
+			&user.ID,
+			&user.Username,
+			&user.Email,
+			&user.Phone,
+			&user.Password,
+			&user.Role,
+			&user.Token,
+		)
 		users = append(users, user)
 	}
 	return users
@@ -89,7 +97,7 @@ func (store *UserStoreMySQL) Save(user *User) error {
 	if err != nil {
 		return err
 	}
-	user.id = int(lastID)
+	user.ID = int(lastID)
 
 	return nil
 }
@@ -100,7 +108,7 @@ func (store *UserStoreMySQL) Find(id int) *User {
 	err := store.DB.
 		QueryRow(`SELECT * FROM users WHERE id=?`, id).
 		Scan(
-			&user.id,
+			&user.ID,
 			&user.Username,
 			&user.Email,
 			&user.Phone,
@@ -125,7 +133,7 @@ func (store *UserStoreMySQL) Update(user *User) error {
 		user.Phone,
 		user.Password,
 		user.Role,
-		user.id,
+		user.ID,
 	)
 
 	if err != nil {
@@ -143,7 +151,7 @@ func (store *UserStoreMySQL) Update(user *User) error {
 func (store *UserStoreMySQL) Delete(user *User) error {
 	result, err := store.DB.Exec(`
 	DELETE FROM users WHERE id = ?`,
-		user.id,
+		user.ID,
 	)
 	if err != nil {
 		return err
