@@ -6,5 +6,6 @@ type DanaStore interface {
 	Find(int) *Dana
 	Found(int) *Dana
 	Update(*Dana) error
+	Status(*Dana) error
 	Delete(dana *Dana) error
 }

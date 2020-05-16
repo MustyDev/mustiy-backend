@@ -136,9 +136,20 @@ func app(e *echo.Echo, store model.DanaStore) {
 		dana.Waktu_start = c.FormValue("waktu_start")
 		dana.Waktu_end = c.FormValue("waktu_end")
 		dana.Url = c.FormValue("url")
-		dana.Status = c.FormValue("status")
 
 		store.Update(dana)
+
+		return c.JSON(http.StatusOK, dana)
+	})
+
+	e.PUT("/donasi/status/:id", func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		dana := store.Find(id)
+		dana.Status = c.FormValue("status")
+
+		store.Status(dana)
 
 		return c.JSON(http.StatusOK, dana)
 	})

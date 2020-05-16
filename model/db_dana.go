@@ -124,7 +124,7 @@ func (store *DanaMysql) Found(kategori int) *Dana {
 
 func (store *DanaMysql) Update(dana *Dana) error {
 	result, err := store.DB.Exec(`
-    UPDATE donasi SET judul= ?, kategori= ?, nama = ?, organisasi = ?,email = ?, nominal = ?, deskripsi = ?, waktu_start = ?,waktu_end = ? WHERE id = ?`,
+    UPDATE donasi SET judul= ?, kategori= ?, nama = ?, organisasi = ?,email = ?, nominal = ?, deskripsi = ?, waktu_start = ?,waktu_end = ?, url = ?  WHERE id = ?`,
 		dana.Judul,
 		dana.Kategori,
 		dana.Nama,
@@ -134,6 +134,7 @@ func (store *DanaMysql) Update(dana *Dana) error {
 		dana.Deskripsi,
 		dana.Waktu_start,
 		dana.Waktu_end,
+		dana.Url,
 		dana.ID,
 	)
 	if err != nil {
@@ -145,6 +146,23 @@ func (store *DanaMysql) Update(dana *Dana) error {
 		return err
 	}
 
+	return nil
+}
+
+func (store *DanaMysql) Status(dana *Dana) error {
+	result, err := store.DB.Exec(`
+    UPDATE donasi SET status= ? WHERE id = ?`,
+		dana.Status,
+		dana.ID,
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = result.RowsAffected()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
