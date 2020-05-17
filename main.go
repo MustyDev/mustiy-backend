@@ -154,11 +154,11 @@ func app(e *echo.Echo, store model.DanaStore) {
 
 	e.POST("/donasi", func(c echo.Context) error {
 		judul := c.FormValue("judul")
-		kategori, _ := strconv.Atoi(c.Param("kategori"))
+		kategori, _ := strconv.Atoi(c.FormValue("kategori"))
 		nama := c.FormValue("nama")
 		organisasi := c.FormValue("organisasi")
 		email := c.FormValue("email")
-		nominal, _ := strconv.Atoi(c.Param("nominal"))
+		nominal, _ := strconv.Atoi(c.FormValue("nominal"))
 		deskripsi := c.FormValue("deskripsi")
 		waktu_start := c.FormValue("waktu_start")
 		waktu_end := c.FormValue("waktu_end")
@@ -177,11 +177,11 @@ func app(e *echo.Echo, store model.DanaStore) {
 
 		dana := store.Find(id)
 		dana.Judul = c.FormValue("judul")
-		dana.Kategori, _ = strconv.Atoi(c.Param("kategori"))
+		dana.Kategori, _ = strconv.Atoi(c.FormValue("kategori"))
 		dana.Nama = c.FormValue("nama")
 		dana.Organisasi = c.FormValue("organisasi")
 		dana.Email = c.FormValue("email")
-		dana.Nominal, _ = strconv.Atoi(c.Param("nominal"))
+		dana.Nominal, _ = strconv.Atoi(c.FormValue("nominal"))
 		dana.Deskripsi = c.FormValue("deskripsi")
 		dana.Waktu_start = c.FormValue("waktu_start")
 		dana.Waktu_end = c.FormValue("waktu_end")
