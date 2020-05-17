@@ -14,6 +14,8 @@ type UserStore interface {
 	Find(int) *User
 	Update(*User) error
 	Delete(user *User) error
+	Login(string) *User
+	FindEmail(string) *User
 }
 type UserStoreMySQL struct {
 	DB *sql.DB
@@ -164,6 +166,51 @@ func (store *UserStoreMySQL) Delete(user *User) error {
 	return nil
 }
 
+func (store *UserStoreMySQL) Login(email string) *User {
+	user := User{}
+
+	err := store.DB.
+		QueryRow(`SELECT * FROM users WHERE Email=?`, email).
+		Scan(
+			&user.ID,
+			&user.Username,
+			&user.Email,
+			&user.Phone,
+			&user.Password,
+			&user.Role,
+			&user.Token,
+		)
+
+	if err != nil {
+		log.Fatal(err)
+		return nil
+	}
+
+	return &user
+}
+
+func (store *UserStoreMySQL) FindEmail(email string) *User {
+	user := User{}
+
+	err := store.DB.
+		QueryRow(`SELECT * FROM users WHERE Email=?`, email).
+		Scan(
+			&user.ID,
+			&user.Username,
+			&user.Email,
+			&user.Phone,
+			&user.Password,
+			&user.Role,
+			&user.Token,
+		)
+
+	if err != nil {
+		return nil
+	}
+
+	return &user
+}
+
 func Hash(password string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
@@ -176,5 +223,6 @@ func Hash(password string) (string, error) {
 
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
 	return err == nil
 }

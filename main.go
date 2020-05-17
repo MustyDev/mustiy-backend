@@ -4,8 +4,10 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/EnggarSe/mustiy-backend/model"
+	"github.com/dgrijalva/jwt-go"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
@@ -31,12 +33,23 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 		email := c.FormValue("Email")
 		phone := c.FormValue("Phone")
 		password := c.FormValue("Password")
-		token := "Belum Diketahui"
+		token := "secret"
 		if phone != "" {
 			role = 1
 		} else {
 			role = 2
 		}
+
+		checkemail := storeUsers.FindEmail(email)
+
+		if checkemail != nil {
+			return echo.ErrUnauthorized
+		}
+
+		if password == "" {
+			return echo.ErrUnauthorized
+		}
+
 		//Hashing password
 		passwordHash, _ := model.Hash(password)
 
@@ -73,11 +86,48 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 		user.Phone = c.FormValue("Phone")
 		password := c.FormValue("password")
 
+		if user.Phone != "" {
+			user.Role = 1
+		} else {
+			user.Role = 2
+		}
+
 		user.Password, _ = model.Hash(password)
 
 		storeUsers.Update(user)
 
 		return c.JSON(http.StatusOK, user)
+	})
+
+	// curl -d "&Email=enggarseptrinas30@yahoo.com&Password=Mansur88" http://localhost:9001/masuk
+	e.POST("/masuk", func(c echo.Context) error {
+		email := c.FormValue("Email")
+		password := c.FormValue("Password")
+
+		if password == "" || email == "" {
+			return echo.ErrUnauthorized
+		}
+
+		user := storeUsers.Login(email)
+
+		err := model.CheckPasswordHash(password, user.Password)
+
+		if err != true {
+			return echo.ErrUnauthorized
+		}
+
+		token := jwt.New(jwt.SigningMethodHS256)
+
+		claims := token.Claims.(jwt.MapClaims)
+		claims["username"] = user.Username
+		claims["id"] = user.ID
+		claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
+
+		t, _ := token.SignedString([]byte("secret"))
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"token": t,
+		})
 	})
 
 }
