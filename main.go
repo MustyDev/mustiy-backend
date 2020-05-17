@@ -145,7 +145,7 @@ func app(e *echo.Echo, store model.DanaStore) {
 		return c.JSON(http.StatusOK, danas)
 	})
 
-	e.GET("/donasi/kategori/:kategori", func(c echo.Context) error {
+	e.GET("/donasi/sort/:kategori", func(c echo.Context) error {
 
 		kategori, _ := strconv.Atoi(c.Param("kategori"))
 		danas := store.Found(kategori)
