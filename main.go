@@ -153,6 +153,14 @@ func app(e *echo.Echo, store model.DanaStore) {
 		return c.JSON(http.StatusOK, danas)
 	})
 
+	e.GET("/donasi/cari/:judul", func(c echo.Context) error {
+
+		judul := c.Param("judul")
+		danas := store.Search(judul)
+
+		return c.JSON(http.StatusOK, danas)
+	})
+
 	e.POST("/donasi", func(c echo.Context) error {
 		judul := c.FormValue("judul")
 		kategori, _ := strconv.Atoi(c.FormValue("kategori"))
