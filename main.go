@@ -213,6 +213,20 @@ func app(e *echo.Echo, store model.DanaStore) {
 		return c.JSON(http.StatusOK, dana)
 	})
 
+	e.PUT("/donasi/nominal/:id", func(c echo.Context) error {
+
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		dana := store.Find(id)
+		dana.Nominal, _ = strconv.Atoi(c.FormValue("nominal"))
+
+		// hasil := dana.Nominal + dana.Nominal
+
+		store.Donate(dana)
+
+		return c.JSON(http.StatusOK, dana)
+	})
+
 	e.DELETE("/donasi/:id", func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
 		dana := store.Find(id)

@@ -169,6 +169,23 @@ func (store *DanaMysql) Status(dana *Dana) error {
 	return nil
 }
 
+func (store *DanaMysql) Donate(dana *Dana) error {
+	result, err := store.DB.Exec(`
+    UPDATE donasi SET nominal= ? WHERE id = ?`,
+		dana.Nominal,
+		dana.ID,
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (store *DanaMysql) Search(judul string) []Dana {
 	danas := []Dana{}
 	rows, err := store.DB.Query("SELECT * FROM donasi WHERE judul like ? ", judul+"%")

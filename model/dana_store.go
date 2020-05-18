@@ -7,6 +7,7 @@ type DanaStore interface {
 	Found(int) []Dana
 	Update(*Dana) error
 	Status(*Dana) error
+	Donate(*Dana) error
 	Search(string) []Dana
 	Delete(dana *Dana) error
 }
