@@ -121,6 +121,7 @@ func appUsers(e *echo.Echo, storeUsers model.UserStore) {
 		claims := token.Claims.(jwt.MapClaims)
 		claims["username"] = user.Username
 		claims["id"] = user.ID
+		claims["role"] = user.Role
 		claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 
 		t, _ := token.SignedString([]byte("secret"))
