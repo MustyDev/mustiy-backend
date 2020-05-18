@@ -96,30 +96,33 @@ func (store *DanaMysql) Find(id int) *Dana {
 	return &dana
 }
 
-func (store *DanaMysql) Found(kategori int) *Dana {
-	dana := Dana{}
-
-	err := store.DB.QueryRow(`SELECT * FROM donasi WHERE kategori=?`, kategori).Scan(
-		&dana.ID,
-		&dana.Judul,
-		&dana.Kategori,
-		&dana.Nama,
-		&dana.Organisasi,
-		&dana.Email,
-		&dana.Nominal,
-		&dana.Deskripsi,
-		&dana.Waktu_start,
-		&dana.Waktu_end,
-		&dana.Url,
-		&dana.Status,
-	)
-
+func (store *DanaMysql) Found(kategori int) []Dana {
+	danas := []Dana{}
+	rows, err := store.DB.Query("SELECT * FROM donasi WHERE kategori = ? ", kategori)
 	if err != nil {
-		log.Fatal(err)
-		return nil
+		return danas
 	}
 
-	return &dana
+	dana := Dana{}
+	for rows.Next() {
+		rows.Scan(
+			&dana.ID,
+			&dana.Judul,
+			&dana.Kategori,
+			&dana.Nama,
+			&dana.Organisasi,
+			&dana.Email,
+			&dana.Nominal,
+			&dana.Deskripsi,
+			&dana.Waktu_start,
+			&dana.Waktu_end,
+			&dana.Url,
+			&dana.Status,
+		)
+		danas = append(danas, dana)
+	}
+
+	return danas
 }
 
 func (store *DanaMysql) Update(dana *Dana) error {
