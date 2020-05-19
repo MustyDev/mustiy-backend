@@ -2,7 +2,6 @@ package model
 
 import (
 	"database/sql"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -91,7 +90,7 @@ func (store *DanaMysql) Find(id int) *Dana {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		// log.Fatal(err)
 		return nil
 	}
 
