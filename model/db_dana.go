@@ -46,6 +46,7 @@ func (store *DanaMysql) All() []Dana {
 			&dana.Waktu_end,
 			&dana.Url,
 			&dana.Status,
+			&dana.Jumlah,
 		)
 		danas = append(danas, dana)
 	}
@@ -54,7 +55,7 @@ func (store *DanaMysql) All() []Dana {
 }
 
 func (store *DanaMysql) Save(dana *Dana) error {
-	result, err := store.DB.Exec(`INSERT INTO donasi(judul,kategori,nama,organisasi,email,nominal,deskripsi,waktu_start,waktu_end,url,status) VALUES(?,?,?,?,?,?,?,?,?,?,?)`, dana.Judul, dana.Kategori, dana.Nama, dana.Organisasi, dana.Email, dana.Nominal, dana.Deskripsi, dana.Waktu_start, dana.Waktu_end, dana.Url, dana.Status)
+	result, err := store.DB.Exec(`INSERT INTO donasi(judul,kategori,nama,organisasi,email,nominal,deskripsi,waktu_start,waktu_end,url,status,jumlah) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`, dana.Judul, dana.Kategori, dana.Nama, dana.Organisasi, dana.Email, dana.Nominal, dana.Deskripsi, dana.Waktu_start, dana.Waktu_end, dana.Url, dana.Status, dana.Jumlah)
 	if err != nil {
 		return err
 	}
@@ -86,6 +87,7 @@ func (store *DanaMysql) Find(id int) *Dana {
 		&dana.Waktu_end,
 		&dana.Url,
 		&dana.Status,
+		&dana.Jumlah,
 	)
 
 	if err != nil {
@@ -118,6 +120,7 @@ func (store *DanaMysql) Found(kategori int) []Dana {
 			&dana.Waktu_end,
 			&dana.Url,
 			&dana.Status,
+			&dana.Jumlah,
 		)
 		danas = append(danas, dana)
 	}
@@ -171,8 +174,8 @@ func (store *DanaMysql) Status(dana *Dana) error {
 
 func (store *DanaMysql) Donate(dana *Dana) error {
 	result, err := store.DB.Exec(`
-    UPDATE donasi SET nominal= ? WHERE id = ?`,
-		dana.Nominal,
+    UPDATE donasi SET jumlah= ? WHERE id = ?`,
+		dana.Jumlah,
 		dana.ID,
 	)
 	if err != nil {
@@ -208,6 +211,7 @@ func (store *DanaMysql) Search(judul string) []Dana {
 			&dana.Waktu_end,
 			&dana.Url,
 			&dana.Status,
+			&dana.Jumlah,
 		)
 		danas = append(danas, dana)
 	}

@@ -173,8 +173,9 @@ func app(e *echo.Echo, store model.DanaStore) {
 		waktu_end := c.FormValue("waktu_end")
 		url := c.FormValue("url")
 		status := c.FormValue("status")
+		jumlah, _ := strconv.Atoi(c.FormValue("jumlah"))
 
-		danas, _ := model.CreateDana(judul, kategori, nama, organisasi, email, nominal, deskripsi, waktu_start, waktu_end, url, status)
+		danas, _ := model.CreateDana(judul, kategori, nama, organisasi, email, nominal, deskripsi, waktu_start, waktu_end, url, status, jumlah)
 		store.Save(danas)
 
 		return c.JSON(http.StatusOK, danas)
@@ -213,14 +214,12 @@ func app(e *echo.Echo, store model.DanaStore) {
 		return c.JSON(http.StatusOK, dana)
 	})
 
-	e.PUT("/donasi/nominal/:id", func(c echo.Context) error {
+	e.PUT("/donasi/jumlah/:id", func(c echo.Context) error {
 
 		id, _ := strconv.Atoi(c.Param("id"))
 
 		dana := store.Find(id)
-		dana.Nominal, _ = strconv.Atoi(c.FormValue("nominal"))
-
-		// hasil := dana.Nominal + dana.Nominal
+		dana.Jumlah, _ = strconv.Atoi(c.FormValue("jumlah"))
 
 		store.Donate(dana)
 
